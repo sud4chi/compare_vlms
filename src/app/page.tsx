@@ -46,13 +46,21 @@ export default function Home() {
   }, [])
 
   // モデル選択肢を生成（model + pretrained をキーに）
-  const options = allData
-    .filter(d => d.model && d.pretrained && d.learning_rate !== undefined && d.learning_rate !== null)
-    .map((d) => ({
-      label: `${d.model} (${d.pretrained}) [lr: ${d.learning_rate}]`,
-      value: `${d.model}-${d.pretrained}-${d.learning_rate}`,
-      key: `${d.model}-${d.pretrained}-${d.learning_rate}`,
-    }))
+	const options = allData
+    	.filter(d => d.model && d.pretrained && d.learning_rate !== undefined && d.learning_rate !== null)
+    	.map((d) => {
+	  		let pretrained_model = d.pretrained
+      		if (d.pretrained === 'cc12m-random-50k-recap_e64'){
+				pretrained_model = 'cc12m'
+			}else if (d.pretrained === 'unity-random-50k-recap_e64'){
+				pretrained_model = 'unity'
+			}	
+            return {
+				label: `(${d.model}, ${pretrained_model}, ${d.learning_rate})`,
+				value: `${d.model}-${d.pretrained}-${d.learning_rate}`,
+				key: `${d.model}-${d.pretrained}-${d.learning_rate}`,
+			}
+    	})
 
 
 	const selected = allData.filter((d) => {
@@ -94,12 +102,35 @@ export default function Home() {
           ))}
         </select>
       </div>
-	  <BarChart width={800} height={400} data={graphData}>
+	  <BarChart 
+	  	width={900} 
+		height={500} 
+		data={graphData} 
+		margin={{
+              top: 20,
+              right: 100,
+              bottom: 100,
+              left: 20,
+            }}>
 		<CartesianGrid strokeDasharray="3 3" />
-		<XAxis dataKey="metric" angle={-75}/>
+		<XAxis 
+			dataKey="metric" 
+			angle={30}
+			tick={(props) => (
+            <text
+              x={props.x} 
+              y={props.y + 8} 
+              textAnchor="start"
+              fontSize={12}
+              fill="#88d3ff" 
+              transform={`rotate(${30},${props.x},${props.y})`}
+            >
+              {props.payload.value}
+            </text>
+          )}/>
 		<YAxis />
 		<Tooltip />
-		<Legend />
+		<Legend layout="vertical" verticalAlign="top" align="center"/>
 		{modelKeys.map((key, index) => (
 		  <Bar key={key} dataKey={key} fill={colors[index % colors.length]} />
 		))}

@@ -47,7 +47,7 @@ node_modules
 README.md
 .gitignore
 out
-src
+/src
 
 .next
 package-lock.json
