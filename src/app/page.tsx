@@ -29,9 +29,8 @@ export default function Home() {
   const [allData, setAllData] = useState<Row[]>([])
   const [model1, setModel1] = useState('')
   const [model2, setModel2] = useState('')
-
   useEffect(() => {
-    fetch('/CC12m_and_SyntheticUnity-synthetic-unity_cc12m.csv')
+    fetch('https://sud4chi.github.io/compare_vlms/CC12m_and_SyntheticUnity-synthetic-unity_cc12m.csv')
       .then(res => res.text())
       .then(text => {
         const parsed = Papa.parse<Row>(text, {
